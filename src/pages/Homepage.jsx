@@ -1,12 +1,20 @@
 import React,{useEffect, useState} from 'react'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
+import { addSingleItemToList, cleanList, removeFromList } from '../redux/reducers/poke-reducer'
 
 const Homepage = () => {
-
+const dispatch = useDispatch();
 const [query, setQuery] = useState("");
 const [findPokemon, setFindPokemon] = useState(null);
+const myPokemons = useSelector(state => state.list.list);
 
+const handleCapture = () => {
+    if(findPokemon) {
+        dispatch(addSingleItemToList(findPokemon));
+        console.log('pokemon catturato', findPokemon )
+    }
+}
 const searchPokemon = async () => {
     try {
         const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${query}`);
@@ -40,6 +48,7 @@ const searchPokemon = async () => {
                                 <div className='img-box bg-white d-flex justify-content-center'  style={{width:"50%", height:"100px"}}>
                                          <img src={findPokemon.sprites['front_default']} alt={findPokemon.name} />
                                 </div>
+                                <button className='btn btn-danger' onClick={handleCapture}>Cattura</button>
                                 <div className='bg-white w-100 p-2'>
                                     <p><span className='fw-bold'>Nome:</span>{findPokemon.name}</p>
                                     <p><span className='fw-bold'>Type:</span>{findPokemon.types[0].type['name']}</p>
@@ -51,7 +60,7 @@ const searchPokemon = async () => {
                                         return (
                                             <li key={index} className='d-flex align-items-center justify-content-between'><span className='fw-bold'>{el.stat['name']}</span>
                                             <div className='border border-dark'style={{width:"50%", height:"8px"}}>
-                                                <div className='bg-dark' style={{width:`${el.base_stat}%`, height:"6px",}}></div>
+                                                <div className='bg-dark' style={{width:`${el.base_stat}px`, height:"6px",}}></div>
                                             </div>
                                             </li>
                                         )
@@ -69,9 +78,22 @@ const searchPokemon = async () => {
                     </div>
                 </div>
                 <div className="col-5 border border-white rounded p-2">
+                    <div className="d-flex">
                     <p className='text-white text-center fw-bold mb-2'>I miei pokemon</p>
-                    <div className="info-box bg-white" style={{width:"100%", height:"90%"}}></div>
-
+                    <button className='btn btn-danger' onClick={() =>dispatch(cleanList())}>Elimina tutto</button>
+                    </div>
+                    
+                    <div className="info-box bg-white" style={{width:"100%", height:""}}></div>
+                    {myPokemons.length > 0 ? (
+                        <ul>
+                            {myPokemons.map((el) => {
+                                return <li className='d-flex' key={el.id}>
+                                    <p>{el.name}</p>
+                                    <button className='btn btn-danger' onClick={() =>dispatch(removeFromList(el))}>x</button>
+                                </li>
+                            })}
+                        </ul>
+                    ) : (<p>nessun pokemon nella lista</p>)}
                 </div>
             </div>
         </div>

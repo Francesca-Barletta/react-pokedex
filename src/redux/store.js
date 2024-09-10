@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import apiReducer from './reducers/api-reducer';
+import pokeReducer from './reducers/poke-reducer';
 
 export const store = configureStore({
   reducer: {
-    pokemon:apiReducer,
+    list: pokeReducer
   },
  
 })
