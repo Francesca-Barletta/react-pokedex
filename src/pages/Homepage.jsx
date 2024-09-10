@@ -30,6 +30,7 @@ const Homepage = () => {
         `https://pokeapi.co/api/v2/pokemon/${query.toLowerCase()}`
       );
       setFindPokemon(response.data);
+      setQuery("")
       console.log(response.data);
     } catch (error) {
       console.error("Nessun Pokemon corrisponde alla ricerca", error);
@@ -64,33 +65,31 @@ const Homepage = () => {
 
 
   return (
-    <section className="flex-grow-1 bg-dark">
+    <section className="flex-grow-1"  style={{ backgroundImage : "url(./bg-image.jpg", backgroundSize: "cover", backgroundPosition: "center" }}>
       <div className="container h-100 d-flex justify-content-center align-items-center ">
-        <div className="row bg-primary bg-gradient p-2 justify-content-around rounded shadow">
-          <div className="col-12">
-            <h1 className="text-warning bg-white rounded text-center fw-bold">
-              Pokedex
-            </h1>
+        <div className="row bg-warning gap-3 px-1 py-4 justify-content-center rounded shadow">
+          <div className="col-11 d-flex justify-content-cemter">
+            <img src="./pokedex.png"  alt="pokedex" className="mx-auto" />
           </div>
-          <div className="col-12 d-flex justify-content-center gap-3 p-3">
+          <div className="col-11 d-flex justify-content-center gap-1 px-1 py-3">
             <input
              className="rounded"
               type="text"
-              placeholder="cerca un pokemon"
+              placeholder="nome del Pokemon"
               onKeyUp={handleKeyPress}
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
               }}
             />
-            <button className="btn btn-warning" onClick={searchPokemon}>
+            <button className="btn btn-primary" onClick={searchPokemon}>
               Cerca
             </button>
-            <button className="btn btn-danger ms-3" onClick={randomPoke}>
-              random
+            <button className="btn btn-primary" onClick={randomPoke}>
+              Pokemon random
             </button>
           </div>
-          <div className="col-12 col-md-6 border d-flex flex-column border-white rounded p-2">
+          <div className="col-11 col-md-5 border d-flex flex-column border-white rounded p-2">
           
            
               {findPokemon ? (
@@ -126,9 +125,12 @@ const Homepage = () => {
                       </p>
                     </div>
                    
+                    <div className="col-3">
+
                       <button
-                        className="btn btn-danger w-25"
+                        className="btn btn-danger"
                         onClick={handleCapture}><MdCatchingPokemon className="mb-1" />Cattura</button>
+                    </div>
                     
                     <div className="col-12 d-flex flex-column">
                       <h4 className="text-center fw-bold my-2 py-2 rounded bg-primary text-warning">
@@ -163,21 +165,23 @@ const Homepage = () => {
                   </div>
                 </div>
               ) : (
-                query && <p> nessun pokemon trovato </p>
+                query && <p className="text-center"> nessun pokemon trovato </p>
               )}
             
           </div>
-          <div className="col-12 d-flex flex-column col-md-6 border border-white rounded p-2">
+          <div className="col-11 d-flex flex-column col-md-5 border border-white rounded p-2">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h4 className="text-white fw-bold mb-2">I miei pokemon</h4>
+              {myPokemons.length > 0 ? (
               <button
                 className="btn btn-danger"
                 onClick={() => dispatch(cleanList())}
               >
-                {" "}
+               
                 <FaTrash className="mb-1" />
                 Svuota la lista
               </button>
+              ) : ("")}
             </div>
 
             <div className="container flex-grow-1 bg-white">
@@ -203,7 +207,7 @@ const Homepage = () => {
                   </tbody>
                 </table>
                 ) : (
-                    <p>Nessun pokemon nella lista</p>
+                    <p className="text-center">Nessun Pokemon nella lista</p>
                 )}
             </div>
            
