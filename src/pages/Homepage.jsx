@@ -94,7 +94,7 @@ const Homepage = () => {
 
   return (
     <Wrapper>
-      <div className="container h-100 d-flex justify-content-center align-items-center my-bg ">
+      <div className="container h-100 d-flex justify-content-center align-items-center">
         <div className="row app-bg gap-3 px-1 py-4 justify-content-center">
           <div className="col-8 d-flex justify-content-center">
             <img src="./pokedex.png" alt="pokedex" className="mx-auto" />
@@ -217,6 +217,7 @@ const Wrapper = styled.article`
   background-image: url("./bg-image.jpg");
   background-size: cover;
   background-position: center;
+  
   .box-state{
      width: 150px;
      height: 8px;
@@ -255,10 +256,7 @@ const Wrapper = styled.article`
       background-color: #2828f3;
     }
   }
-  .my-bg{
-    background-color: #0000009e;
-    
-  }
+
 `;
 
 export default Homepage;
