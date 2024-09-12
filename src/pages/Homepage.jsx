@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,28 +8,32 @@ import {
 } from "../redux/reducers/poke-reducer";
 import { FaTrash } from "react-icons/fa";
 import { MdCatchingPokemon } from "react-icons/md";
-import { TiDelete } from "react-icons/ti";
+
 
 
 const Homepage = () => {
   const dispatch = useDispatch();
   const [query, setQuery] = useState("");
   const [findPokemon, setFindPokemon] = useState(null);
+  const [image, setImage] = useState(null);
   const myPokemons = useSelector((state) => state.list.list);
+  const isPokemonInList = findPokemon && myPokemons.some(pokemon => pokemon.id === findPokemon.id);
 
+  
   const handleCapture = () => {
     if (findPokemon) {
       dispatch(addSingleItemToList(findPokemon));
       console.log("pokemon catturato", findPokemon);
     }
   };
-
+  
   const searchPokemon = async () => {
     try {
       const response = await axios.get(
         `https://pokeapi.co/api/v2/pokemon/${query.toLowerCase()}`
       );
       setFindPokemon(response.data);
+      setImage(response.data.sprites["front_default"]);
       setQuery("")
       console.log(response.data);
     } catch (error) {
@@ -37,24 +41,25 @@ const Homepage = () => {
       setFindPokemon(null);
     }
   };
-
+  
   const handleKeyPress = (e) => {
     if (e.key == "Enter") {
       searchPokemon();
     }
   };
-
+  
   function randomPoke() {
     const min = 0;
     const max = 1025;
     const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
     const getRandom = async () =>{
-    try {
+      try {
         const response = await axios.get(
           `https://pokeapi.co/api/v2/pokemon/${randomNum}`
         );
         setFindPokemon(response.data);
-        console.log(response.data);
+        setImage(response.data.sprites["front_default"]);
+        
       } catch (error) {
         console.error("Nessun Pokemon corrisponde alla ricerca", error);
         setFindPokemon(null);
@@ -62,6 +67,26 @@ const Homepage = () => {
     };
     getRandom()
   }
+
+  
+  useEffect(() => {
+    let interval;
+
+    if(findPokemon){
+      const front = findPokemon.sprites["front_default"];
+      const back = findPokemon.sprites["back_default"];
+      
+      if(front && back) {
+
+        interval = setInterval(() => {
+          setImage((prevImage) => (prevImage === front ? back : front))
+        },2000)
+      } else {
+        setImage(front || back);
+      }
+    }
+    return () =>clearInterval(interval)
+  },[findPokemon])
 
 
   return (
@@ -89,7 +114,7 @@ const Homepage = () => {
               Pokemon random
             </button>
           </div>
-          <div className="col-11 col-md-5 border d-flex flex-column border-white rounded p-2">
+          <div className="col-11 col-md-6 border d-flex flex-column border-white rounded p-2">
           
            
               {findPokemon ? (
@@ -99,7 +124,7 @@ const Homepage = () => {
                     style={{ width: "100%", height: "100px" }}
                   >
                     <img
-                      src={findPokemon.sprites["front_default"]}
+                      src={image}
                       alt={findPokemon.name}
                     />
                   </div>
@@ -126,10 +151,10 @@ const Homepage = () => {
                     </div>
                    
                     <div className="col-3">
-
+                  {!isPokemonInList && (
                       <button
                         className="btn btn-danger"
-                        onClick={handleCapture}><MdCatchingPokemon className="mb-1" />Cattura</button>
+                        onClick={handleCapture}><MdCatchingPokemon className="mb-1"/>Cattura</button>)}
                     </div>
                     
                     <div className="col-12 d-flex flex-column">
@@ -171,6 +196,7 @@ const Homepage = () => {
           </div>
           <div className="col-11 d-flex flex-column col-md-5 border border-white rounded p-2">
             <div className="d-flex justify-content-between align-items-center mb-3">
+              
               <h4 className="text-white fw-bold mb-2">I miei pokemon</h4>
               {myPokemons.length > 0 ? (
               <button
