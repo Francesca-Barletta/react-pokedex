@@ -4,10 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addSingleItemToList,
   cleanList,
+  openModal,
   removeFromList,
 } from "../redux/reducers/poke-reducer";
 import { FaTrash } from "react-icons/fa";
 import { MdCatchingPokemon } from "react-icons/md";
+import Modal from "../components/Modal";
 
 
 
@@ -100,7 +102,7 @@ const Homepage = () => {
             <input
              className="rounded"
               type="text"
-              placeholder="nome del Pokemon"
+              placeholder="Pokémon name"
               onKeyUp={handleKeyPress}
               value={query}
               onChange={(e) => {
@@ -108,10 +110,10 @@ const Homepage = () => {
               }}
             />
             <button className="btn btn-primary" onClick={searchPokemon}>
-              Cerca
+              Search
             </button>
             <button className="btn btn-primary" onClick={randomPoke}>
-              Pokemon random
+              Pokémon random
             </button>
           </div>
           <div className="col-11 col-md-6 border d-flex flex-column border-white rounded p-2">
@@ -133,7 +135,7 @@ const Homepage = () => {
                     <div className="col-6"
                   >
                       <p>
-                        <span className="fw-bold">Nome: </span>
+                        <span className="fw-bold">Name: </span>
                         {findPokemon.name}
                       </p>
                       <p>
@@ -154,7 +156,7 @@ const Homepage = () => {
                   {!isPokemonInList && (
                       <button
                         className="btn btn-danger"
-                        onClick={handleCapture}><MdCatchingPokemon className="mb-1"/>Cattura</button>)}
+                        onClick={handleCapture}><MdCatchingPokemon className="mb-1"/>Catch!</button>)}
                     </div>
                     
                     <div className="col-12 d-flex flex-column">
@@ -190,14 +192,14 @@ const Homepage = () => {
                   </div>
                 </div>
               ) : (
-                query && <p className="text-center"> nessun pokemon trovato </p>
+                query && <p className="text-center"> No Pokémon found </p>
               )}
             
           </div>
           <div className="col-11 d-flex flex-column col-md-5 border border-white rounded p-2">
             <div className="d-flex justify-content-between align-items-center mb-3">
               
-              <h4 className="text-white fw-bold mb-2">I miei pokemon</h4>
+              <h4 className="text-white fw-bold mb-2">My pokemon</h4>
               {myPokemons.length > 0 ? (
               <button
                 className="btn btn-danger"
@@ -205,7 +207,7 @@ const Homepage = () => {
               >
                
                 <FaTrash className="mb-1" />
-                Svuota la lista
+                Delete list
               </button>
               ) : ("")}
             </div>
@@ -219,12 +221,18 @@ const Homepage = () => {
                     <tr key={el.id} className="d-flex w-100 justify-content-between align-items-center ">
                       <td className="border-0"><img src={el.sprites["front_default"]} alt={el.name} /></td>
                       <td className="border-0">{el.name}</td>
-                      <td className="text-end border-0">       
+                      <td className="text-end border-0">     
+                      <button
+                        className=" btn btn-warning fw-bold"
+                        onClick={() => dispatch(openModal(el))}
+                      >
+                        Details
+                      </button>  
                         <button
                         className=" btn btn-danger fw-bold"
                         onClick={() => dispatch(removeFromList(el))}
                       >
-                        x
+                        X
                       </button></td>
                     
                     </tr>
@@ -240,6 +248,7 @@ const Homepage = () => {
           </div>
         </div>
       </div>
+      <Modal/>
     </section>
   );
 };

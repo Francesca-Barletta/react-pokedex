@@ -19,6 +19,8 @@ const isListAction = (action) => {
 };
 
 const removeFromList = createAction("remove-from-list");
+const openModal = createAction("open-modal");
+const closeModal = createAction("close-modal");
 
 const localStorageList = getItemFromLocalStorage("list")
 const totalFromLocalStorage = getItemFromLocalStorage("total")
@@ -26,6 +28,8 @@ const totalFromLocalStorage = getItemFromLocalStorage("total")
 const initialValue = {
    list: localStorageList && localStorageList.length > 0 ? localStorageList : [],
    total: totalFromLocalStorage || 0,
+   selectedPokemon: null,
+   isModalOpen: false,
 }
 
 const pokeSlice = createSlice({
@@ -46,6 +50,14 @@ const pokeSlice = createSlice({
         builder
         .addCase(removeFromList, (state, action) => {
             state.list = state.list.filter((el) => el.id !== action.payload.id);
+        })
+        .addCase(openModal, (state, action) => {
+            state.selectedPokemon = action.payload;
+            state.isModalOpen = true;
+        })
+        .addCase(closeModal, (state, action) => {
+            state.selectedPokemon = null;
+            state.isModalOpen = false
         })
         .addMatcher(isAddToListAction, (state, action) => {
             state.total += action.payload.likes;
@@ -75,7 +87,7 @@ const addSingleItemToList = (item) => (dispatch, getState) => {
 
 
 export const {addToList, cleanList} = pokeSlice.actions;
-export { addSingleItemToList, removeFromList };
+export { addSingleItemToList, removeFromList, openModal, closeModal };
 
 const {reducer} = pokeSlice;
 export default reducer;
