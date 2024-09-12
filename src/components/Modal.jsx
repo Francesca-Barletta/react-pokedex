@@ -5,8 +5,7 @@ import { closeModal } from '../redux/reducers/poke-reducer';
 const Modal = () => {
   const dispatch = useDispatch();
   const {selectedPokemon, isModalOpen} = useSelector((state) => state.list);
-  console.log('Modal open:', isModalOpen);
-  console.log('Selected Pokemon:', selectedPokemon);
+
 
   if(!isModalOpen || !selectedPokemon) return null;
   return (
