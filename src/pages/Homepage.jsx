@@ -13,46 +13,67 @@ import { MdCatchingPokemon } from "react-icons/md";
 import Modal from "../components/Modal";
 
 const Homepage = () => {
+  //per dispatchare le azioni del reducer
   const dispatch = useDispatch();
+  //parola scritta nell'input
   const [query, setQuery] = useState("");
+  //oggetto restituito dalla chiamata
   const [findPokemon, setFindPokemon] = useState(null);
+  //immagine per mostrare il pokemon trovato 
   const [image, setImage] = useState(null);
+  //costante per monitorare se la ricerca è stata eseguita o l'utente ha solo digitato la parola
   const [searchPerformed, setSearchPerformed] = useState(false);
+  //useSelector serve per accedere allo stato globale e qui ne estrae una parte state.list è la porzione associata allo slice list, state .list.list accede alla proprietà list nello slice list
   const myPokemons = useSelector((state) => state.list.list);
+  // console.log('State from useSelector:', myPokemons);
+  //funzione che controlla se il pokemon trovato è già nella lista di quelli salvati
+  //metodo degli array some che controlla se almeno un elemento dell'array soddisfa la condizione specificata se non lo trova restituisce false
   const isPokemonInList = findPokemon && myPokemons.some((pokemon) => pokemon.id === findPokemon.id);
 
+
+  //funzione al click per aggiungere pokemon alla lista
   const handleCapture = () => {
     if (findPokemon) {
       dispatch(addSingleItemToList(findPokemon));
-      console.log("pokemon catturato", findPokemon);
+      // console.log("pokemon catturato", findPokemon);
     }
   };
 
+  // funzione asincrona di ricerca
   const searchPokemon = async () => {
+    //setta la ricerac come attivata
     setSearchPerformed(true);
     try {
+      //viene effetuata la chiamata api get con axios passandogli dinamicamente la parola inserita dall'utente in minuscolo
       const response = await axios.get(
         `https://pokeapi.co/api/v2/pokemon/${query.toLowerCase()}`
       );
+      //viene settato il findpokemon con response.data
       setFindPokemon(response.data);
+      //viene settata la prima immagine da vedere con quella front
       setImage(response.data.sprites["front_default"]);
+      //viene riazzerata ala parola nella barra di ricerca
       setQuery("");
     } catch (error) {
+      //se la chiamata ha qualche errore il findpokemon viene settato a null
       setFindPokemon(null);
     }
   };
-
+  
+  //funzione searchPokemon richiamata anche cliccando enter oltre che al pulsante
   const handleKeyPress = (e) => {
     if (e.key == "Enter") {
       searchPokemon();
     }
   };
-
+  
+  //funzione che dato il numero di indez minore e maggiore dell'array che contiene tutti i pokemon ne prende uno casualmente
   function randomPoke() {
     setQuery("");
     const min = 0;
     const max = 1025;
     const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+    //generato il numero viene dichiarata la funzione che fa la chiamata questa volta utilizzado il numero come id
     const getRandom = async () => {
       try {
         const response = await axios.get(
@@ -65,31 +86,39 @@ const Homepage = () => {
         setFindPokemon(null);
       }
     };
+    //viene invocata la funzione per la chiamata
     getRandom();
   }
-
+  
+  //funzione che azzera la ricerca
   function clear() {
     setQuery("");
     setFindPokemon(null);
     setSearchPerformed(false);
   }
-
+  //useEffect per gestire l'animazione dell'immagine
   useEffect(() => {
     let interval;
-
+    //se il pokemon cercato esiste
     if (findPokemon) {
+      //salvo in 2 costanti il percorso per ricavare immagine front e back
       const front = findPokemon.sprites["front_default"];
       const back = findPokemon.sprites["back_default"];
-
+      //se le immagini ci sono
       if (front && back) {
+        //interval  esegue un setInterval che setta l'immagine se è front diventa backe e viceversa
         interval = setInterval(() => {
           setImage((prevImage) => (prevImage === front ? back : front));
+          //ogni 2 secondi
         }, 2000);
       } else {
+        //sennò l'immagine resta o front o back
         setImage(front || back);
       }
     }
+    //cleanup function per non eseguire all'infinito
     return () => clearInterval(interval);
+    //useEffect viene eseguito quando cambia il pokemon cercato/trovato
   }, [findPokemon]);
 
   return (
@@ -106,10 +135,13 @@ const Homepage = () => {
               className="rounded me-2"
               type="text"
               placeholder="Pokémon name"
+              // al rilascio di enter viene eseguita la funzione
               onKeyUp={handleKeyPress}
               value={query}
+              // quando cambia la query viene settata con quella nuova
               onChange={(e) => {
                 setQuery(e.target.value);
+                //mentre digito la query non sto facendo ancora la ricerca
                 setSearchPerformed(false);
               }}
             />
