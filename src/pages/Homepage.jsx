@@ -219,7 +219,7 @@ const Wrapper = styled.article`
   background-position: center;
   
   .box-state{
-     width: 150px;
+     width: 200px;
      height: 8px;
   }
   .img-box{

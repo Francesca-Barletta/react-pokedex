@@ -1,6 +1,7 @@
 import React from 'react';
 import{useDispatch, useSelector} from 'react-redux';
 import { closeModal } from '../redux/reducers/poke-reducer';
+import styled from "styled-components"
 
 const Modal = () => {
   const dispatch = useDispatch();
@@ -9,7 +10,7 @@ const Modal = () => {
 
   if(!isModalOpen || !selectedPokemon) return null;
   return (
-    <section className='my-modal'>
+    <Wrapper className='my-modal'>
 
     <div className='bg-white rounded p-3 d-flex flex-column justify-content-center align-items-center'>
 
@@ -38,17 +39,8 @@ const Modal = () => {
                   className="d-flex align-items-center gap-3 justify-content-between"
                 >
                   <span className="fw-bold">{el.stat["name"]}</span>
-                  <div
-                    className="border border-dark"
-                    style={{ width: "150px", height: "8px" }}
-                  >
-                    <div
-                      className="bg-dark"
-                      style={{
-                        width: `${el.base_stat}px`,
-                        height: "6px",
-                      }}
-                    ></div>
+                  <div className="border border-dark box-state" >
+                    <div className="bg-dark h-100" style={{width: `${el.base_stat}px`,}}></div>
                   </div>
                 </li>
               );
@@ -57,8 +49,25 @@ const Modal = () => {
 
       <button className='btn btn-danger' onClick={() => dispatch(closeModal())}>Go back</button>
     </div>
-    </section>
+    </Wrapper>
   )
 }
+
+const Wrapper = styled.article`
+  position: fixed;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  .box-state{
+    width:200px;
+    height:8px;
+  }
+`
 
 export default Modal
