@@ -242,13 +242,13 @@ const allPokemon = (page) => {
           { pokeList.length > 0 || findPokemon ? (
           <div className="col-12 col-md-6 border d-flex flex-column justify-content-center border-white rounded p-2">
            
-              <div className=" p-2 h-100 ">
+              <div className=" h-100 ">
                 <p>{console.log('lenght', pokeList.length)}</p>
                  <h4 className="text-white fw-bold find text-center">Pokémon List</h4>
                  <ul className="list-unstyled d-flex justify-content-center shadow rounded bg-light flex-wrap">
                 {images.map((poke, index) => {
                   return (
-                    <li className=" col-4 col-md-3 p-2" key={index}><div className="btn btn-orange d-flex flex-column align-items-center" onClick={() =>{handlePokeButton(poke.name)}}>
+                    <li className=" col-4 col-md-3 p-1" key={index}><div className="btn btn-orange d-flex flex-column align-items-center" onClick={() =>{handlePokeButton(poke.name)}}>
                      <img className="w-100" src={poke.image} alt={poke.name} />
                      <p className="btn-text">{poke.name}</p>
                      </div></li>
