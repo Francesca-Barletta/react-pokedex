@@ -12,7 +12,7 @@ const Modal = () => {
   return (
     <Wrapper className='my-modal'>
 
-    <div className='bg-white rounded p-3 d-flex flex-column justify-content-center align-items-center'>
+    <div className='bg-white rounded p-3 d-flex flex-column justify-content-center align-items-center color-blue'>
 
        <img src={selectedPokemon.sprites["front_default"]} alt={selectedPokemon.name}/>
        <p>
@@ -34,20 +34,17 @@ const Modal = () => {
         <ul className="list-unstyled">
             {selectedPokemon.stats.map((el, index) => {
               return (
-                <li
-                  key={index}
-                  className="d-flex align-items-center gap-3 justify-content-between"
-                >
-                  <span className="fw-bold">{el.stat["name"]}</span>
-                  <div className="border border-dark box-state" >
-                    <div className="bg-dark h-100" style={{width: `${el.base_stat}px`,}}></div>
+                <li key={index} >
+                  <span className="fw-bold color-blue">{el.stat["name"]}</span>
+                  <div className="box-state rounded" >
+                    <div className="state h-100" style={{width: `${el.base_stat}px`,}}></div>
                   </div>
                 </li>
               );
             })}
         </ul>
 
-      <button className='btn btn-danger' onClick={() => dispatch(closeModal())}>Go back</button>
+      <button className='btn btn-orange' onClick={() => dispatch(closeModal())}>Go back</button>
     </div>
     </Wrapper>
   )
@@ -63,10 +60,17 @@ const Wrapper = styled.article`
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: 1000;  
   .box-state{
-    width:200px;
-    height:8px;
+     width: 200px;
+     height: 12px;
+     border:2px solid #06064e;
+     .state{
+      background-image: linear-gradient(#070799, #5151f6);
+     }
+  }
+  .color-blue{
+    color: #070799;
   }
 `
 
