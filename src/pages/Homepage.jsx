@@ -248,9 +248,10 @@ const allPokemon = (page) => {
                  <ul className="list-unstyled d-flex justify-content-center shadow rounded bg-light flex-wrap">
                 {images.map((poke, index) => {
                   return (
-                    <li className=" col-4 col-md-3 p-1" key={index}><div className="btn btn-orange d-flex flex-column align-items-center" onClick={() =>{handlePokeButton(poke.name)}}>
-                     <img className="w-100" src={poke.image} alt={poke.name} />
-                     <p className="btn-text">{poke.name}</p>
+                    <li className=" col-4 col-md-3 p-1" key={index}>
+                      <div className="btn btn-orange d-flex flex-column align-items-center h-100" onClick={() =>{handlePokeButton(poke.name)}}>
+                          <img className="w-100" src={poke.image} alt={poke.name} />
+                          <p className="btn-text">{poke.name}</p>
                      </div></li>
                   )
                 })}
@@ -409,7 +410,7 @@ const Wrapper = styled.article`
     }
   }
   .btn-text{
-    font-size:1rem;
+    font-size:0.8rem;
     margin:0;
   }
 
