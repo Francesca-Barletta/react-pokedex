@@ -273,7 +273,8 @@ const allPokemon = (page) => {
                 </div>
                 <div className="container bg-white rounded flex-grow-1">
                   <div className="row  justify-content-between align-items-start g-0 py-2">
-                    <div className="col-6">
+                    <div className="col-8 ps-2 color-blue">
+                      
                       <p><span className="fw-bold">Name: </span> {findPokemon.name}</p>
                       <p><span className="fw-bold">Type: </span> {findPokemon.types[0].type["name"]} </p>
                       <p><span className="fw-bold">Height: </span> {findPokemon.height}</p>
@@ -330,13 +331,13 @@ const allPokemon = (page) => {
                     {myPokemons.map((el) => {
                       return (
                         <tr key={el.id}
-                          className="row row-cols-2 mx-auto row-cols-lg-4 w-100 border rounded shadow py-3 justify-content-center align-items-center">
+                          className="row row-cols-2 mx-auto row-cols-lg-4 w-100 border rounded shadow py-3 justify-content-center align-items-center ">
                           <td className="col-6 col-lg-3 border-0 text-center">
                             <img src={el.sprites["front_default"]} alt={el.name}/>
                           </td>
-                          <td className="col-6 col-lg-3 border-0 text-center fw-bold">{el.name}{" "}</td>
+                          <td className="col-6 col-lg-3 border-0 text-center color-blue fw-bold">{el.name}</td>
                           <td className="col-6 col-lg-3 border-0 text-center">
-                            <button className=" btn btn-warning fw-bold" onClick={() => dispatch(openModal(el))}>{" "} Details{" "}</button>
+                            <button className=" btn btn-blue fw-bold" onClick={() => dispatch(openModal(el))}>{" "} Details{" "}</button>
                           </td>
                           <td className=" col-6 col-lg-3 border-0 text-center">
                             <button className=" btn btn-orange fw-bold" onClick={() => dispatch(removeFromList(el))}>{" "} X</button>
@@ -370,6 +371,7 @@ const Wrapper = styled.article`
      border:2px solid #06064e;
      .state{
       background-image: linear-gradient(#070799, #5151f6);
+      border-radius: 3px 0 0 3px;
      }
   }
   .img-box{

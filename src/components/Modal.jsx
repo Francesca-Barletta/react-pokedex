@@ -67,6 +67,7 @@ const Wrapper = styled.article`
      border:2px solid #06064e;
      .state{
       background-image: linear-gradient(#070799, #5151f6);
+      border-radius: 3px 0 0 3px;
      }
   }
   .color-blue{
