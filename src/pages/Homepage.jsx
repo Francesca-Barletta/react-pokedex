@@ -214,7 +214,7 @@ const allPokemon = (page) => {
           <div className="col-8 d-flex justify-content-center">
             <img src="./pokedex.png" alt="pokedex" className="mx-auto" />
           </div>
-          <div className="col-12 d-flex flex-wrap justify-content-between align-items-center gap-1 px-1 py-3">
+          <div className="col-12 d-flex flex-wrap justify-content-between align-items-center gap-1 p-3">
             <div>
 
             <input
