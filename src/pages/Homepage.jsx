@@ -217,32 +217,33 @@ function allPokemon() {
             <button className="btn btn-orange" onClick={clear}>Clear</button>
             
           </div>
-          <div className="col-10 col-md-6 border d-flex flex-column border-white rounded p-2">
+          <div className="col-10 col-md-6 border d-flex flex-column justify-content-center border-white rounded p-2">
             {pokeList ? (
-              <div className="d-flex flex-column align-items-center gap-2 p-2 h-100 justify-content-center">
-                 <h4 className="text-white fw-bold find">Pokémon List</h4>
-                 <ul className="list-unstyled d-flex justify-content-center gap-2 bg-light p-2 shadow rounded flex-wrap">
+              <div className=" p-2 h-100 ">
+                 <h4 className="text-white fw-bold find text-center">Pokémon List</h4>
+                 <ul className="list-unstyled d-flex justify-content-center gap-2 p-2 shadow rounded bg-light flex-wrap">
                 {pokeList.map((poke, index) => {
                   return (
                     <li key={index}><button className="btn btn-orange" onClick={() =>{handlePokeButton(poke.name)}}>{poke.name}</button></li>
                   )
                 })}
+                <li className="d-flex w-100 justify-content-between align-items-center m-2">
+                    <button className="btn btn-blue" onClick={handlePrevList}>Prev</button>
+                    <button className="btn btn-blue" onClick={handleNextList}>Next</button>
+                </li>
                 </ul>
+              
                </div>
             ) : ("")}
-            {pokeList ? (
-                <div className="d-flex justify-content-between align-items-center m-2">
-                <button className="btn btn-blue" onClick={handlePrevList}>Prev</button>
-                  <button className="btn btn-blue" onClick={handleNextList}>Next</button>
-                </div>
-            ) : ("") }
+            
+            
             {findPokemon ? (
               <div className="d-flex flex-column align-items-center gap-2 h-100 justify-content-center">
                  <h4 className="text-white fw-bold find">Pokémon Find</h4>
-                <div className="img-box">
+                <div className="img-box rounded">
                   <img src={image} alt={findPokemon.name} />
                 </div>
-                <div className="container bg-white flex-grow-1">
+                <div className="container bg-white rounded flex-grow-1">
                   <div className="row  justify-content-between align-items-start g-0 py-2">
                     <div className="col-6">
                       <p><span className="fw-bold">Name: </span> {findPokemon.name}</p>
@@ -293,14 +294,14 @@ function allPokemon() {
             
             </div>
 
-            <div className="container pt-2 flex-grow-1 bg-white">
+            <div className="container pt-2 flex-grow-1 rounded bg-white">
               {myPokemons.length > 0 ? (
                 <table className="table">
                   <tbody className="border-0">
                     {myPokemons.map((el) => {
                       return (
                         <tr key={el.id}
-                          className="row row-cols-2 mx-auto row-cols-lg-4 w-100 border shadow py-2 justify-content-center align-items-center">
+                          className="row row-cols-2 mx-auto row-cols-lg-4 w-100 border rounded shadow py-3 justify-content-center align-items-center">
                           <td className="col-6 col-lg-3 border-0 text-center">
                             <img src={el.sprites["front_default"]} alt={el.name}/>
                           </td>
