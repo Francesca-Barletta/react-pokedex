@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +29,36 @@ const Homepage = () => {
   //funzione che controlla se il pokemon trovato è già nella lista di quelli salvati
   //metodo degli array some che controlla se almeno un elemento dell'array soddisfa la condizione specificata se non lo trova restituisce false
   const isPokemonInList = findPokemon && myPokemons.some((pokemon) => pokemon.id === findPokemon.id);
+  
+  const [pokeList, setPokeList] = useState(null);
 
+  const [baseNext, setBaseNext] = useState(0);
+  const [page, setPage] = useState(`?offset=${baseNext}&limit=20`)
+
+  const handleNextList = () => {
+    if(baseNext < 1025){
+    const newOffset = baseNext + 20
+    setBaseNext(newOffset);
+    console.log('newOffset', newOffset);
+    setPage(`?offset=${newOffset}&limit=20`)
+    console.log('page', page);
+    }
+ }
+
+ const handlePrevList = () => {
+  if(baseNext > 0){
+
+    const newOffset = baseNext - 20
+    setBaseNext(newOffset);
+    console.log('newOffset', newOffset);
+    setPage(`?offset=${newOffset}&limit=20`)
+    console.log('page', page);
+  }
+}
+
+ useEffect(() => {
+  allPokemon()
+ }, [page])
 
   //funzione al click per aggiungere pokemon alla lista
   const handleCapture = () => {
@@ -40,8 +69,8 @@ const Homepage = () => {
   };
 
   // funzione asincrona di ricerca
-  const searchPokemon = async () => {
-    //setta la ricerac come attivata
+  const searchPokemon =  useCallback(async () => {
+     //setta la ricerac come attivata
     setSearchPerformed(true);
     try {
       //viene effetuata la chiamata api get con axios passandogli dinamicamente la parola inserita dall'utente in minuscolo
@@ -58,15 +87,46 @@ const Homepage = () => {
       //se la chiamata ha qualche errore il findpokemon viene settato a null
       setFindPokemon(null);
     }
-  };
-  
+   }, [query]);
+
   //funzione searchPokemon richiamata anche cliccando enter oltre che al pulsante
   const handleKeyPress = (e) => {
     if (e.key == "Enter") {
       searchPokemon();
     }
   };
+
+  const handlePokeButton = (name) => {
+    const getPokemonFromList = async () => {
+      try {
+        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
+        setFindPokemon(response.data);
+        console.log(findPokemon);
+        setImage(response.data.sprites["front_default"]);
+      } catch (error) {
+        setFindPokemon(null);
+      }
+    }
+    getPokemonFromList();
+   
+  }
   
+function allPokemon() {
+  const getList = async () => {
+    try {
+      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${page}`);
+      setPokeList(response.data.results);
+      console.log('pokelist', response.data.results);
+    } catch (error) {
+      setPokeList(null)
+    }
+  };
+  getList();
+  
+  
+}
+
+
   //funzione che dato il numero di indez minore e maggiore dell'array che contiene tutti i pokemon ne prende uno casualmente
   function randomPoke() {
     setQuery("");
@@ -95,6 +155,10 @@ const Homepage = () => {
     setQuery("");
     setFindPokemon(null);
     setSearchPerformed(false);
+    setPokeList(null);
+    setBaseNext(0);
+    setPage(`?offset=${baseNext}&limit=20`);
+
   }
   //useEffect per gestire l'animazione dell'immagine
   useEffect(() => {
@@ -148,15 +212,33 @@ const Homepage = () => {
             <button className="btn btn-blue" onClick={searchPokemon}>Search</button>
             </div>
             
-
+            <button className="btn btn-blue" onClick={allPokemon}>Pokémon List</button>
             <button className="btn btn-blue" onClick={randomPoke}>Pokémon random</button>
             <button className="btn btn-orange" onClick={clear}>Clear</button>
             
           </div>
           <div className="col-10 col-md-6 border d-flex flex-column border-white rounded p-2">
-            <h4 className="text-white fw-bold find">Pokémon find:</h4>
+            {pokeList ? (
+              <div className="d-flex flex-column align-items-center gap-2 p-2 h-100 justify-content-center">
+                 <h4 className="text-white fw-bold find">Pokémon List</h4>
+                 <ul className="list-unstyled d-flex justify-content-center gap-2 bg-light p-2 shadow rounded flex-wrap">
+                {pokeList.map((poke, index) => {
+                  return (
+                    <li key={index}><button className="btn btn-orange" onClick={() =>{handlePokeButton(poke.name)}}>{poke.name}</button></li>
+                  )
+                })}
+                </ul>
+               </div>
+            ) : ("")}
+            {pokeList ? (
+                <div className="d-flex justify-content-between align-items-center m-2">
+                <button className="btn btn-blue" onClick={handlePrevList}>Prev</button>
+                  <button className="btn btn-blue" onClick={handleNextList}>Next</button>
+                </div>
+            ) : ("") }
             {findPokemon ? (
               <div className="d-flex flex-column align-items-center gap-2 h-100 justify-content-center">
+                 <h4 className="text-white fw-bold find">Pokémon Find</h4>
                 <div className="img-box">
                   <img src={image} alt={findPokemon.name} />
                 </div>
@@ -199,6 +281,7 @@ const Homepage = () => {
                 <p className="text-center bg-white p-2"> No Pokémon found </p>
               )
             )}
+          
           </div>
           <div className="col-10 col-md-5 d-flex flex-column border border-white rounded p-2">
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -206,7 +289,8 @@ const Homepage = () => {
               {myPokemons.length > 0 ? (
                 <button className="btn btn-orange" onClick={() => dispatch(cleanList())}>
                   <FaTrash className="mb-1"/> Delete list</button>
-              ) : ("")}
+              ) : ("")} 
+            
             </div>
 
             <div className="container pt-2 flex-grow-1 bg-white">
