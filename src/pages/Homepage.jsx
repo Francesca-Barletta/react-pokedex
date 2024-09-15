@@ -23,6 +23,8 @@ const Homepage = () => {
   const [image, setImage] = useState(null);
   //costante per monitorare se la ricerca è stata eseguita o l'utente ha solo digitato la parola
   const [searchPerformed, setSearchPerformed] = useState(false);
+
+  const [images, setImages] = useState([])
   //useSelector serve per accedere allo stato globale e qui ne estrae una parte state.list è la porzione associata allo slice list, state .list.list accede alla proprietà list nello slice list
   const myPokemons = useSelector((state) => state.list.list);
   // console.log('State from useSelector:', myPokemons);
@@ -30,7 +32,7 @@ const Homepage = () => {
   //metodo degli array some che controlla se almeno un elemento dell'array soddisfa la condizione specificata se non lo trova restituisce false
   const isPokemonInList = findPokemon && myPokemons.some((pokemon) => pokemon.id === findPokemon.id);
   
-  const [pokeList, setPokeList] = useState(null);
+  const [pokeList, setPokeList] = useState([]);
 
   const [baseNext, setBaseNext] = useState(0);
   const [page, setPage] = useState(`?offset=${baseNext}&limit=20`)
@@ -106,7 +108,24 @@ const Homepage = () => {
     getPokemonFromList();
    
   }
+
+  const getImages = async (array) => {
+   const imagePromises = array.map(async (el) => {
+    try {
+      const response = await axios.get(el.url);
+      const image = response.data.sprites["front_default"];
+      return {name: el.name, image}
+    } catch (error) {
+      return null;
+    }
+   })
+   
+   const imageResults = await Promise.all(imagePromises);
+   console.log("Image results:", imageResults);
+   setImages(imageResults)
+  }
   
+
 const allPokemon = (page) => {
   const getList = async () => {
      try {
@@ -114,11 +133,17 @@ const allPokemon = (page) => {
         setPokeList(response.data.results);
         console.log('pokelist', response.data.results);
       } catch (error) {
-      setPokeList(null)
+      setPokeList([])
     }
   }
   getList();
   };
+
+  useEffect (() => {
+    if(pokeList.length > 0){
+      getImages(pokeList);
+    }
+  },[pokeList])
   
     
 
@@ -152,7 +177,7 @@ const allPokemon = (page) => {
     setQuery("");
     setFindPokemon(null);
     setSearchPerformed(false);
-    setPokeList(null);
+    setPokeList([]);
     setBaseNext(0);
     setPage(`?offset=${baseNext}&limit=20`);
 
@@ -214,14 +239,19 @@ const allPokemon = (page) => {
             <button className="btn btn-orange" onClick={clear}>Clear</button>
             
           </div>
+          { pokeList.length > 0 || findPokemon ? (
           <div className="col-12 col-md-6 border d-flex flex-column justify-content-center border-white rounded p-2">
-            {pokeList ? (
+           
               <div className=" p-2 h-100 ">
+                <p>{console.log('lenght', pokeList.length)}</p>
                  <h4 className="text-white fw-bold find text-center">Pokémon List</h4>
-                 <ul className="list-unstyled d-flex justify-content-center gap-2 p-2 shadow rounded bg-light flex-wrap">
-                {pokeList.map((poke, index) => {
+                 <ul className="list-unstyled d-flex justify-content-center shadow rounded bg-light flex-wrap">
+                {images.map((poke, index) => {
                   return (
-                    <li key={index}><button className="btn btn-orange" onClick={() =>{handlePokeButton(poke.name)}}>{poke.name}</button></li>
+                    <li className=" col-4 col-md-3 p-2" key={index}><div className="btn btn-orange d-flex flex-column align-items-center" onClick={() =>{handlePokeButton(poke.name)}}>
+                     <img className="w-100" src={poke.image} alt={poke.name} />
+                     <p className="btn-text">{poke.name}</p>
+                     </div></li>
                   )
                 })}
                 <li className="d-flex w-100 justify-content-between align-items-center m-2">
@@ -231,7 +261,7 @@ const allPokemon = (page) => {
                 </ul>
               
                </div>
-            ) : ("")}
+            
             
             
             {findPokemon ? (
@@ -281,6 +311,7 @@ const allPokemon = (page) => {
             )}
           
           </div>
+          ) : ("")}
           <div className="col-12 col-md-5 d-flex flex-column border border-white rounded p-2">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h4 className="text-white fw-bold mb-2">My Pokémon</h4>
@@ -376,6 +407,10 @@ const Wrapper = styled.article`
     &:hover{
       background-color: #2828f3;
     }
+  }
+  .btn-text{
+    font-size:1rem;
+    margin:0;
   }
 
 `;
