@@ -108,20 +108,27 @@ const Homepage = () => {
     getPokemonFromList();
    
   }
-
+ 
+  //getImages prende un array di oggetti come parametro
   const getImages = async (array) => {
+    // imagePromises fa il map dell'array, e ne ricava il singolo oggetto el
    const imagePromises = array.map(async (el) => {
     try {
+      //viene fatta la chiamata utilizzando l'url che è una proprietà dell'oggetto el
       const response = await axios.get(el.url);
+      //viene salvata la costante che identifica l'immagine
       const image = response.data.sprites["front_default"];
+      //viene ritornato l'oggetto con le proprietà che ci servono, name e image
       return {name: el.name, image}
     } catch (error) {
       return null;
     }
    })
    
+   //imageResults aspetta l'array di promises creato dal map sia risolto, imageResults sarà un array di oggetti
    const imageResults = await Promise.all(imagePromises);
    console.log("Image results:", imageResults);
+   //images viene settato con imagesResults
    setImages(imageResults)
   }
   
@@ -139,10 +146,13 @@ const allPokemon = (page) => {
   getList();
   };
 
+  //se pokelist è stato generato ed ha una lunghezza superiore a zero
   useEffect (() => {
     if(pokeList.length > 0){
+      //viene chiamato getimages
       getImages(pokeList);
     }
+    //ogni volta che pokelist cambia
   },[pokeList])
   
     
