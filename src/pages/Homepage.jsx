@@ -39,26 +39,22 @@ const Homepage = () => {
     if(baseNext < 1025){
     const newOffset = baseNext + 20
     setBaseNext(newOffset);
-    console.log('newOffset', newOffset);
-    setPage(`?offset=${newOffset}&limit=20`)
-    console.log('page', page);
+    const newPage = `?offset=${newOffset}&limit=20`
+    setPage(newPage)
+    allPokemon(newPage);
     }
  }
 
  const handlePrevList = () => {
   if(baseNext > 0){
-
     const newOffset = baseNext - 20
     setBaseNext(newOffset);
-    console.log('newOffset', newOffset);
-    setPage(`?offset=${newOffset}&limit=20`)
-    console.log('page', page);
+    const newPage = `?offset=${newOffset}&limit=20`
+    setPage(newPage)
+    allPokemon(newPage);
   }
-}
+};
 
- useEffect(() => {
-  allPokemon()
- }, [page])
 
   //funzione al click per aggiungere pokemon alla lista
   const handleCapture = () => {
@@ -111,23 +107,24 @@ const Homepage = () => {
    
   }
   
-function allPokemon() {
+const allPokemon = (page) => {
   const getList = async () => {
-    try {
-      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${page}`);
-      setPokeList(response.data.results);
-      console.log('pokelist', response.data.results);
-    } catch (error) {
+     try {
+        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${page}`);
+        setPokeList(response.data.results);
+        console.log('pokelist', response.data.results);
+      } catch (error) {
       setPokeList(null)
     }
-  };
+  }
   getList();
+  };
   
-  
-}
+    
 
 
-  //funzione che dato il numero di indez minore e maggiore dell'array che contiene tutti i pokemon ne prende uno casualmente
+
+  //funzione che dato il numero di index minore e maggiore dell'array che contiene tutti i pokemon ne prende uno casualmente
   function randomPoke() {
     setQuery("");
     const min = 0;
@@ -192,7 +189,7 @@ function allPokemon() {
           <div className="col-8 d-flex justify-content-center">
             <img src="./pokedex.png" alt="pokedex" className="mx-auto" />
           </div>
-          <div className="col-10 d-flex flex-wrap justify-content-between align-items-center gap-1 px-1 py-3">
+          <div className="col-12 d-flex flex-wrap justify-content-between align-items-center gap-1 px-1 py-3">
             <div>
 
             <input
@@ -212,12 +209,12 @@ function allPokemon() {
             <button className="btn btn-blue" onClick={searchPokemon}>Search</button>
             </div>
             
-            <button className="btn btn-blue" onClick={allPokemon}>Pokémon List</button>
+            <button className="btn btn-blue" onClick={() => {allPokemon(page)}}>Pokémon List</button>
             <button className="btn btn-blue" onClick={randomPoke}>Pokémon random</button>
             <button className="btn btn-orange" onClick={clear}>Clear</button>
             
           </div>
-          <div className="col-10 col-md-6 border d-flex flex-column justify-content-center border-white rounded p-2">
+          <div className="col-12 col-md-6 border d-flex flex-column justify-content-center border-white rounded p-2">
             {pokeList ? (
               <div className=" p-2 h-100 ">
                  <h4 className="text-white fw-bold find text-center">Pokémon List</h4>
@@ -264,10 +261,10 @@ function allPokemon() {
                       <ul className="list-unstyled">
                         {findPokemon.stats.map((el, index) => {
                           return (
-                            <li key={index} className="d-flex align-items-center justify-content-between">
-                              <span className="fw-bold">{el.stat["name"]}</span>
-                              <div className="border border-dark box-state">
-                                <div className="bg-dark" style={{width: `${el.base_stat}px`, height: "6px"}}></div>
+                            <li key={index} className="text-center mb-2">
+                              <span className="fw-bold color-blue">{el.stat["name"]}</span>
+                              <div className="box-state mx-auto rounded">
+                                <div className="state h-100" style={{width: `${el.base_stat}px`}}></div>
                               </div>
                             </li>
                           );
@@ -284,7 +281,7 @@ function allPokemon() {
             )}
           
           </div>
-          <div className="col-10 col-md-5 d-flex flex-column border border-white rounded p-2">
+          <div className="col-12 col-md-5 d-flex flex-column border border-white rounded p-2">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h4 className="text-white fw-bold mb-2">My Pokémon</h4>
               {myPokemons.length > 0 ? (
@@ -337,7 +334,11 @@ const Wrapper = styled.article`
   
   .box-state{
      width: 200px;
-     height: 8px;
+     height: 12px;
+     border:2px solid #06064e;
+     .state{
+      background-image: linear-gradient(#070799, #5151f6);
+     }
   }
   .img-box{
     width: 100%;
@@ -358,6 +359,9 @@ const Wrapper = styled.article`
   }
   .my-bg-blue{
     background-color: #070799;
+  }
+  .color-blue{
+    color: #070799;
   }
   .btn-orange{
     background-color: #ff5100;
