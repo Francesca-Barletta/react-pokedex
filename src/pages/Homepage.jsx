@@ -99,7 +99,7 @@ const Homepage = () => {
       try {
         const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
         setFindPokemon(response.data);
-        console.log(findPokemon);
+        
         setImage(response.data.sprites["front_default"]);
       } catch (error) {
         setFindPokemon(null);
@@ -127,7 +127,7 @@ const Homepage = () => {
    
    //imageResults aspetta l'array di promises creato dal map sia risolto, imageResults sarà un array di oggetti
    const imageResults = await Promise.all(imagePromises);
-   console.log("Image results:", imageResults);
+  
    //images viene settato con imagesResults
    setImages(imageResults)
   }
@@ -138,7 +138,7 @@ const allPokemon = (page) => {
      try {
         const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${page}`);
         setPokeList(response.data.results);
-        console.log('pokelist', response.data.results);
+        
       } catch (error) {
       setPokeList([])
     }
@@ -162,6 +162,7 @@ const allPokemon = (page) => {
   //funzione che dato il numero di index minore e maggiore dell'array che contiene tutti i pokemon ne prende uno casualmente
   function randomPoke() {
     setQuery("");
+    setPokeList([]);
     const min = 0;
     const max = 1025;
     const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -174,12 +175,13 @@ const allPokemon = (page) => {
         setFindPokemon(response.data);
         setImage(response.data.sprites["front_default"]);
       } catch (error) {
-        console.error("Nessun Pokemon corrisponde alla ricerca", error);
+        console.error('pokemon non trovato')
         setFindPokemon(null);
       }
     };
     //viene invocata la funzione per la chiamata
     getRandom();
+    
   }
   
   //funzione che azzera la ricerca
@@ -249,11 +251,12 @@ const allPokemon = (page) => {
             <button className="btn btn-orange" onClick={clear}>Clear</button>
             
           </div>
-          { pokeList.length > 0 || findPokemon ? (
-          <div className="col-12 col-md-6 border d-flex flex-column justify-content-center border-white rounded p-2">
+      <div className="col-12 col-md-6 d-flex flex-column justify-content-center">
+          { pokeList.length > 0 ? (
+          <div className="col-12 border d-flex flex-column justify-content-center border-white mb-2 rounded p-2">
            
               <div className=" h-100 ">
-                <p>{console.log('lenght', pokeList.length)}</p>
+                
                  <h4 className="text-white fw-bold find text-center">Pokémon List</h4>
                  <ul className="list-unstyled d-flex justify-content-center shadow rounded bg-light flex-wrap">
                 {images.map((poke, index) => {
@@ -272,59 +275,58 @@ const allPokemon = (page) => {
                 </ul>
               
                </div>
-            
-            
-            
-            {findPokemon ? (
-              <div className="d-flex flex-column align-items-center gap-2 h-100 justify-content-center">
-                 <h4 className="text-white fw-bold find">Pokémon Find</h4>
-                <div className="img-box rounded">
-                  <img src={image} alt={findPokemon.name} />
-                </div>
-                <div className="container bg-white rounded flex-grow-1">
-                  <div className="row  justify-content-between align-items-start g-0 py-2">
-                    <div className="col-8 ps-2 color-blue">
-                      
-                      <p><span className="fw-bold">Name: </span> {findPokemon.name}</p>
-                      <p><span className="fw-bold">Type: </span> {findPokemon.types[0].type["name"]} </p>
-                      <p><span className="fw-bold">Height: </span> {findPokemon.height}</p>
-                      <p><span className="fw-bold">Weight: </span>{findPokemon.weight}</p>
-                    </div>
-
-                    <div className="col-4 d-flex row-reverse">
-                      {!isPokemonInList && (
-                        <button className="btn btn-orange ms-auto" onClick={handleCapture}>
-                          <MdCatchingPokemon className="mb-1" /> Catch!</button>
-                      )}
-                    </div>
-
-                    <div className="col-12 d-flex flex-column">
-                      <h4 className="text-center fw-bold my-2 py-2 rounded my-bg-blue text-warning"> Stats </h4>
-                      <ul className="list-unstyled">
-                        {findPokemon.stats.map((el, index) => {
-                          return (
-                            <li key={index} className="text-center mb-2">
-                              <span className="fw-bold color-blue">{el.stat["name"]}</span>
-                              <div className="box-state mx-auto rounded">
-                                <div className="state h-100" style={{width: `${el.base_stat}px`}}></div>
-                              </div>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              searchPerformed && (
-                <p className="text-center bg-white p-2"> No Pokémon found </p>
-              )
-            )}
-          
           </div>
-          ) : ("")}
-          <div className="col-12 col-md-5 d-flex flex-column border border-white rounded p-2">
+     ) : ("")}
+         
+            
+            
+              {findPokemon ? (
+              <div className="col-12 border d-flex flex-column justify-content-center border-white rounded p-2">
+                    <h4 className="text-white fw-bold text-center find">Pokémon Find</h4>
+                    <div className="img-box mb-3 rounded">
+                         <img src={image} alt={findPokemon.name} />
+                    </div>
+                    <div className="container bg-white rounded flex-grow-1">
+                         <div className="row  justify-content-between align-items-start g-0 py-2">
+                              <div className="col-8 ps-2 color-blue">
+                      
+                                  <p><span className="fw-bold">Name: </span> {findPokemon.name}</p>
+                                  <p><span className="fw-bold">Type: </span> {findPokemon.types[0].type["name"]} </p>
+                                  <p><span className="fw-bold">Height: </span> {findPokemon.height}</p>
+                                  <p><span className="fw-bold">Weight: </span>{findPokemon.weight}</p>
+                              </div>
+
+                              <div className="col-4 d-flex row-reverse">
+                                  {!isPokemonInList && (
+                                    <button className="btn btn-orange ms-auto" onClick={handleCapture}>
+                                      <MdCatchingPokemon className="mb-1" /> Catch!</button>
+                                  )}
+                              </div>
+
+                              <div className="col-12 d-flex flex-column">
+                                  <h4 className="text-center fw-bold my-2 py-2 rounded my-bg-blue text-warning"> Stats </h4>
+                                  <ul className="list-unstyled">
+                                      {findPokemon.stats.map((el, index) => {
+                                        return (
+                                          <li key={index} className="text-center mb-2">
+                                            <span className="fw-bold color-blue">{el.stat["name"]}</span>
+                                            <div className="box-state mx-auto rounded">
+                                              <div className="state h-100" style={{width: `${el.base_stat}px`}}></div>
+                                            </div>
+                                          </li>
+                                        );
+                                      })}
+                                  </ul>
+                              </div>
+                          </div>
+                    </div>
+              </div>
+            ) : ( searchPerformed && <p className="text-center bg-white p-2"> No Pokémon found </p> )}
+          
+        </div>
+        <div className="col-12 col-md-5">
+        {myPokemons.length > 0 ? (
+          <div className="col-12 d-flex flex-column border border-white rounded p-2">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h4 className="text-white fw-bold mb-2">My Pokémon</h4>
               {myPokemons.length > 0 ? (
@@ -334,8 +336,7 @@ const allPokemon = (page) => {
             
             </div>
 
-            <div className="container pt-2 flex-grow-1 rounded bg-white">
-              {myPokemons.length > 0 ? (
+              <div className="container pt-2 flex-grow-1 rounded bg-white">
                 <table className="table">
                   <tbody className="border-0">
                     {myPokemons.map((el) => {
@@ -357,11 +358,10 @@ const allPokemon = (page) => {
                     })}
                   </tbody>
                 </table>
-              ) : (
-                <p className="text-center"> No Pokémon in the list</p>
-              )}
             </div>
           </div>
+              ) : ("")}
+        </div>
         </div>
       </div>
       <Modal />
